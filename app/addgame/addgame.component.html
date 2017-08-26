@@ -1,0 +1,174 @@
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" [routerLink]="['/home']">Gamers++</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a [routerLink]="['/home']"><span class="glyphicon glyphicon-home"></span>Home</a></li>
+        </ul>
+        <form class="navbar-form navbar-left">
+        </form>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a [routerLink]="['/login']"><span class="glyphicon glyphicon-log-out"></span> LogOut</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li *ngIf="isTeacher"><a [routerLink]="['/addcourse']"><span class="glyphicon glyphicon-plus"></span>Add course</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li *ngIf="isTeacher"><a [routerLink]="['/addgame']"><span class="glyphicon glyphicon-knight"></span>Add Game</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li *ngIf="isStudent"><a [routerLink]="['/enrollIn']"><span class="glyphicon glyphicon-cloud-upload"></span>Join Course</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a [routerLink]="['/courses']"><span class="glyphicon glyphicon-book"></span>Courses</a></li>
+        </ul>
+    </div>
+</nav>
+<br><br>
+<div class="col-md-6 col-md-offset-3">
+    <h2>Add Game </h2>
+    <div>
+        <form name="form"  #f="ngForm" role="form">
+            <div class="form-group">
+                <label for="gamename">Game name</label>
+                <input [disabled]="mode=='Edit!'" type="text" class="form-control" id="gameName" name="gamename" [(ngModel)]="game.name" #gamename="ngModel"
+                    required />
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input [disabled]="mode=='Edit!'" class="form-control" id="description" name="description" [(ngModel)]="game.description" #description="ngModel"
+                    required />
+            </div>
+            <div class="form-group">
+                <label for="levelno">No of levels</label>
+                <input [disabled]="mode=='Edit!'" type="number" class="form-control" min="1" id="levelno" name="levelno" [(ngModel)]="game.levelno" #levelno="ngModel"
+                    required/>
+            </div>
+            <label>Courses :</label>
+            <select [(ngModel)]="game.course" id="courses" name="coursesList" [disabled]="mode=='Edit!'" required>
+                        <option *ngFor="let x of course" 
+                           [ngValue]=x >{{x.courseName}}</option>
+             </select>
+            <div>
+                <label>Type of your game:</label>
+                <div>
+                    <input [disabled]="mode=='Edit!'" required type="radio" id="TorF" [ngModel]="{checked: game.type == 'true-false'}" (ngModelChange)="game.type='true-false'"
+                        name="type" value="true-false">True/False<br>
+                    <input [disabled]="mode=='Edit!'" required type="radio" id="MCQ" [ngModel]="{checked: game.type == 'choice'}" (ngModelChange)="game.type='choice'"
+                        name="type" value="choice">Choice<br>
+                </div>
+            </div>
+            <div class="form-group last">
+                <div class="col-sm-offset-3 col-sm-9">
+                    <button (click)="OnDone()" type="submit" id="submit" class="btn btn-success btn-sm">{{mode}}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- true-false game -->
+    <div [hidden]="typetf">
+        <form name="form" (ngSubmit)="f.form.valid" role="form" #f="ngForm" novalidate>
+            <div class="form-group">
+                <label for="levelname">Level Name</label>
+                <input type="text" class="form-control" id="levelName" name="levelname" [(ngModel)]="level.levelName" #question="ngModel" required />
+
+            </div>
+            <div class="form-group">
+                <label for="question">Question</label>
+                <input type="text" class="form-control" id="question" name="question" [(ngModel)]="level.question" #question="ngModel" required />
+            </div>
+            <div class="form-group">
+                <label>Right answer:</label>
+                <div>
+
+                    <input type="radio" id="True" [ngModel]="{checked: level.rightAnswer == 'True'}" (ngModelChange)="level.rightAnswer='True'" name="rightAnswer"
+                        value="True">True<br>
+                    <input type="radio" id="False" [ngModel]="{checked: level.rightAnswer == 'False'}" (ngModelChange)="level.rightAnswer='False'" name="rightAnswer"
+                        value="False">false<br>
+                </div>
+            </div>
+            <div class="form-group last">
+                <div class="col-sm-offset-3 col-sm-9">
+                    <button (click)="levelsEnd()" id="next" [disabled]="counter == game.levelno" type="submit" class="btn btn-success btn-sm">Next level</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- choice game -->
+    <div [hidden]="typec">
+        <form name="form" (ngSubmit)="f.form.valid" #f="ngForm" role="form" novalidate>
+            <div class="form-group">
+                <label for="levelname">Level Name</label>
+                <input type="text" class="form-control" name="levelname" [(ngModel)]="level.levelName" #question="ngModel" required />
+            </div>
+            <div class="form-group">
+                <label for="question">Question</label>
+                <input type="text" class="form-control" name="question" [(ngModel)]="level.question" #question="ngModel" required />
+            </div>
+            <div class="form-group">
+                <label for="choice1">Choice 1</label>
+                <input type="text" class="form-control" name="choice1" [(ngModel)]="choicea" #choice1="ngModel" required />
+            </div>
+            <div class="form-group">
+                <label for="choice2">Choice 2</label>
+                <input type="text" class="form-control" name="choice2" [(ngModel)]="choiceb" #choice2="ngModel" required />
+            </div>
+            <div class="form-group">
+                <label for="choice3">Choice 3</label>
+                <input type="text" class="form-control" name="choice3" [(ngModel)]="choicec" #choice3="ngModel" required />
+            </div>
+            <div class="form-group">
+                <label for="choice4">Choice 4</label>
+                <input type="text" class="form-control" name="choice4" [(ngModel)]="choiced" #choice4="ngModel" required />
+            </div>
+            <label>Right answer </label>
+            <div class="form-group">
+                <label>Type of your game:</label>
+                <div>
+                    <input type="radio" [checked]="idx === 0" (change)="getright(choicea)"  name="ans" [value]="choicea">{{choicea}}<br>
+                </div>
+                <div>
+                    <input type="radio"  [checked]="idx === 0" (change)="getright(choiceb)" name="ans" [value]="choiceb">{{choiceb}}<br>
+                </div>
+                <div>
+                    <input type="radio"  [checked]="idx === 0" (change)="getright(choicec)" name="ans" [value]="choicec">{{choicec}}<br>
+                </div>
+                <div>
+                    <input type="radio"  [checked]="idx === 0" (change)="getright(choiced)" name="ans" [value]="choiced">{{choiced}}<br>
+                </div>
+            </div>
+            <div class="form-group last">
+                <div class="col-sm-offset-3 col-sm-9">
+                    <button (click)="levelsEnd()" [disabled]="counter == game.levelno" type="submit" class="btn btn-success btn-sm">Next level</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+<style>
+    .panel-default {
+        opacity: 0.9;
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+    
+    *[role="form"] {
+        opacity: 0.9;
+        max-width: 530px;
+        padding: 35px;
+        margin: 0 auto;
+        background-color: white;
+        border-radius: 0.3em;
+    }
+    
+    *[role="form"] h2 {
+        margin-left: 5em;
+        margin-bottom: 1em;
+    }
+</style>

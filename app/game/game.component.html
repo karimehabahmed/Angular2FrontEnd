@@ -1,0 +1,70 @@
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" [routerLink]="['/home']">Gamers++</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a [routerLink]="['/home']"><span class="glyphicon glyphicon-home"></span>Home</a></li>
+        </ul>
+        <form class="navbar-form navbar-left">
+        </form>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a [routerLink]="['/login']"><span class="glyphicon glyphicon-log-out"></span> LogOut</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li *ngIf="isTeacher"><a [routerLink]="['/addcourse']"><span class="glyphicon glyphicon-plus"></span>Add course</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li *ngIf="isTeacher"><a [routerLink]="['/addgame']"><span class="glyphicon glyphicon-knight"></span>Add Game</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li *ngIf="isStudent"><a [routerLink]="['/enrollIn']"><span class="glyphicon glyphicon-cloud-upload"></span>Join Course</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a [routerLink]="['/courses']"><span class="glyphicon glyphicon-book"></span>Courses</a></li>
+        </ul>
+    </div>
+</nav>
+<br><br>
+<div style="padding-top:auto;">
+    <div [hidden]="success" class="alert alert-success">
+        <strong>Success!</strong> a7sant yabni walahy .
+    </div>
+    <div [hidden]="fail" class="alert alert-danger">
+        <strong>Fail!</strong> ya faaaaaaaaaaaaaaaaaashel .
+    </div>
+</div>
+<ul *ngIf="!gameOver">
+    <li *ngFor="let level of game?.levels">
+        <div [hidden]="counter!=level.number">
+            <div class="form-group">
+                <h3>{{level.name}}</h3>
+                <label for="Question">Question</label><br>
+                <label for="Question">{{level.question}}</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-3">Answer</label>
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-sm-4" id="choice">
+                            <ul>
+                                <li *ngFor="let answer of level.answers">
+                                    <label class="radio-inline">
+                                        <input type="radio"  [checked]="idx === 0" (change)="getright(answer)"  name="ans" [value]="answer">{{answer}}
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <label>60 sec to finish this GAME :D : {{ticks}} </label>
+            <div class="col-sm-9 col-sm-offset-3">
+                <button (click)="OnClick()" type="submit" class="btn btn-primary btn-block">Submit</button>
+            </div>
+        </div>
+    </li>
+</ul>
+<div *ngIf="gameOver">
+   <h1> Game Over </h1>
+</div>
